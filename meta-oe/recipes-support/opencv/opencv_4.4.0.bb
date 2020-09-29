@@ -199,10 +199,21 @@ RDEPENDS_python3-opencv = "python3-core python3-numpy"
 
 RDEPENDS_${PN}-apps  = "bash"
 
+i# not working 
+#CXXFLAGS_append = " -fdebug-prefix-map=${WORKDIR}=/opencv/ -ffile-prefix-map=${WORKDIR}=/opencv/ "
+
 do_compile_prepend() {
     # remove the build host info to improve reproducibility
     if [ -f ${WORKDIR}/build/modules/core/version_string.inc ]; then
         sed -i "s#${WORKDIR}#/workdir#g" ${WORKDIR}/build/modules/core/version_string.inc
+    fi
+    # works for src , dev package 
+    if [ -f ${B}/CMakeFiles/Export/lib/cmake/opencv4/OpenCVModules.cmake ]; then
+        sed -i "s#${WORKDIR}#/workdir#g" ${B}/CMakeFiles/Export/lib/cmake/opencv4/OpenCVModules.cmake
+    fi
+    if [ -f ${B}/modules/core/CMakeFiles/opencv_core.dir/Labels.txt ]; then
+        sed -i "s#${WORKDIR}#/workdir#g" ${B}/modules/core/CMakeFiles/opencv_core.dir/Labels.txt
+        sed -i "s#${WORKDIR}#/workdir#g" ${B}/modules/core/CMakeFiles/opencv_core.dir/Labels.json
     fi
 }
 
